@@ -13,22 +13,10 @@ final class Application {
   }
   
   func configure(in window: UIWindow) {
-    let homeNavigator = DefaultHomeNavigator(
-      services: useCaseProvider,
-      navigationController: NavigationController()
-    )
-    
-    let optionsNavigator = DefaultOptionsNavigator(
-      services: useCaseProvider,
-      navigationController: NavigationController()
-    )
-    
-    let navigators: [Navigator] = [
-      homeNavigator,
-      optionsNavigator
-    ]
-    window.rootViewController = TabBarController(navigators: navigators)
-    //window.rootViewController = ViewController()
+    let viewModel = HomeViewModel(useCase: useCaseProvider.makeSearchUseCase())
+    let controller = HomeController()
+    controller.viewModel = viewModel
+    window.rootViewController = controller
     window.makeKeyAndVisible()
   }
 }

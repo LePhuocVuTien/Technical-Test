@@ -15,33 +15,13 @@ final class Network<T: Decodable> {
     self.scheduler = ConcurrentDispatchQueueScheduler(qos: qos)
   }
   
-  func getItem(_ path: String, id: String) -> Observable<T> {
-    let absolutePath = "\(endPoint)/\(path)/\(id)"
+  func getItem(_ path: String) -> Observable<T> {
+    let absolutePath = "\(endPoint)/\(path)"
     return RxAlamofire
       .data(.get, absolutePath)
       .observe(on: scheduler)
       .map({ data -> T in
         return try JSONDecoder().decode(T.self, from: data)
       })
-  }
-  
-  func getItem(_ path: String, params: [String: Any]) -> Observable<T> {
-    let absolutePath = "\(endPoint)/\(path)"
-    return RxAlamofire
-      .data(.get, absolutePath, parameters: params)
-      .observe(on: scheduler)
-      .map({ data -> T in
-        return try JSONDecoder().decode(T.self, from: data)
-      })
-  }
-  
-  func pushItem(_ path: String, params: [String: Any]) -> Observable<T> {
-    let absolutePath = "\(endPoint)/\(path)"
-    return RxAlamofire
-      .data(.post, absolutePath, parameters: params, encoding: JSONEncoding.default)
-      .observe(on: scheduler)
-      .map { data -> T in
-        return try JSONDecoder().decode(T.self, from: data)
-      }
   }
 }

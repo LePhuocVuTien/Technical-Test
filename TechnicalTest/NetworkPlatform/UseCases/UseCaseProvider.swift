@@ -9,10 +9,6 @@ public final class UseCaseProvider: Domain.UseCaseProvider {
     networkProvider = NetworkProvider()
   }
   
-//  public func makeHomeUseCase() -> Domain.HomeUseCase {
-//    return HomeUseCase(network: networkProvider.makeHomeNetwork())
-//  }
-  
   public func makeSearchUseCase() -> Domain.SearchUseCase {
     return SearchUseCase(network: networkProvider.makeSearchNetwork())
   }

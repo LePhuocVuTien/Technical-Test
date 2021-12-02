@@ -4,23 +4,24 @@ import RxCocoa
 import RxDataSources
 
 final class HomeViewModel: ViewModelType {
-  private let navigator: HomeNavigator
-  private let useCase: Domain.SearchUseCase
   
-  init(navigator: HomeNavigator, useCase: Domain.SearchUseCase) {
-    self.navigator = navigator
+  private let useCase: Domain.SearchUseCase
+  private var elements: [Element] = []
+  
+  init(useCase: Domain.SearchUseCase) {
     self.useCase = useCase
   }
   
   struct Input {
     let viewDidLoad: Driver<Void>
-    let query: Driver<String>
+    let itemSelected: Driver<Element>
   }
   
   struct Output {
-    let viewDidLoad: Driver<Void>
-    let items: Driver<[SectionModel<String, Domain.Detail>]>
-    let types: Driver<[SectionModel<String, TypeItem>]>
+    let calendar: Driver<[SectionModel<String, Element>]>
+    let itemSelected: Driver<Element>
+    let fetching: Driver<Bool>
+    let error: Driver<Error>
   }
   
   func transform(input: Input) -> Output {
@@ -28,48 +29,70 @@ final class HomeViewModel: ViewModelType {
     let activityIndicator = ActivityIndicator()
     let errorTracker = ErrorTracker()
     
-    let viewDidLoad = input.viewDidLoad
+    let defaultItem = input.viewDidLoad
+      .map {return [SectionModel(model: "", items: self.makeElements())]}
     
-    let items = input.query
-      .flatMapLatest { [weak self] text -> Driver<[Domain.Detail]> in
+    let items = input.viewDidLoad
+      .debounce(.microseconds(1000))
+      .flatMapLatest { [weak self] _ -> Driver<[Domain.Item]> in
         guard let self = self else {return .empty()}
-        if text.isEmpty {
-          return Driver.of([])
-        }
-        return self.fetch(text: text)
+        return self.fetch()
           .trackError(errorTracker)
           .trackActivity(activityIndicator)
           .asDriverOnErrorJustComplete()
       }
-      .map {return [SectionModel(model: "", items: $0)]}
+      .do(onNext: { [weak self] items in
+        self?.elements = self?.makeElements(items: items) ?? []
+      })
+      .map {return [SectionModel(model: "", items: self.makeElements(items: $0))]}
     
-    let types = input.viewDidLoad
-      .flatMapLatest { [weak self] _ -> Driver<[TypeItem]> in
-        guard let self = self else {return .empty()}
-        return Driver.of(self.makeType())
-      }
-      .map {return [SectionModel(model: "", items: $0)]}
+    let calendar = Driver.merge(defaultItem, items)
+    
+    let fetching = activityIndicator.asDriver()
+    let error = errorTracker.asDriver()
     
     return Output(
-      viewDidLoad: viewDidLoad,
-      items: items,
-      types: types
+      calendar: calendar,
+      itemSelected: input.itemSelected,
+      fetching: fetching,
+      error: error
     )
   }
   
-  private func fetch(text: String) -> Observable<[Domain.Detail]> {
-    let params: [String: String] = ["text": text]
-    return self.useCase.fetch(params: params)
-      .flatMapLatest({ response -> Observable<[Domain.Detail]> in
-        guard response.code == "ok", let result = response.result else {
-          return Observable.of([])
-        }
-        return Observable.of(result)
-      })
+  func makeElements() -> [Element] {
+    var elements: [Element] = []
+    for i in 0..<7 {
+      guard let day = DayItem(rawValue: i) else {continue}
+      elements.append(Element(isActive: false, day: day , item: nil))
+    }
+    return elements
   }
   
-  func makeType() -> [TypeItem] {
-    let items: [TypeItem] = TypeItem.allCases
-    return items
+  func makeElements(items: [Domain.Item]) -> [Element] {
+    var elements: [Element] = []
+    items.forEach { item in
+      guard let day = DayItem(rawValue: item.day) else {return}
+      elements.append(Element(isActive: false, day: day, item: item))
+    }
+    return elements
+  }
+  
+  private func fetch() -> Observable<[Domain.Item]> {
+    return self.useCase.fetch()
+      .flatMapLatest { data -> Observable<[Domain.Item]> in
+        guard data.data.count > 0 else {
+          let error = NSError.makeError(message: Works.error)
+          return Observable.error(error)
+        }
+        return Observable.of(data.data)
+      }
+  }
+}
+
+extension HomeViewModel {
+  struct Element {
+    var isActive: Bool
+    var day: DayItem
+    var item: Domain.Item?
   }
 }

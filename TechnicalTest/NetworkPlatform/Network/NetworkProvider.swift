@@ -4,20 +4,11 @@ final class NetworkProvider {
   private let apiEndpoint: String
   
   public init() {
-    #if DEBUG
-    apiEndpoint = "https://api-app-dev.map4d.vn"
-    #else
-    apiEndpoint = "https://api-app.map4d.vn"
-    #endif
+    apiEndpoint = "https://demo2187508.mockable.io"
   }
   
-  public func makeSearchNetwork() -> DetailNetwork<[Domain.Detail]> {
-    let network = Network<Response<[Domain.Detail]>>(apiEndpoint)
+  public func makeSearchNetwork() -> DetailNetwork<Domain.Data> {
+    let network = Network<Domain.Data>(apiEndpoint)
     return DetailNetwork(network: network)
   }
-  
-//  public func makeHomeNetwork() -> DetailNetwork<Domain.Detail> {
-//    let network = Network<Response<Domain.Detail>>(apiEndpoint)
-//    return DetailNetwork(network: network)
-//  }
 }

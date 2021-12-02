@@ -7,17 +7,15 @@ import RxDataSources
 
 class HomeController: UIViewController {
   
+  typealias Element = HomeViewModel.Element
+  
   let disposeBag = DisposeBag()
   var viewModel: HomeViewModel!
   lazy var content = ContentView(frame: .zero)
   
-  private lazy var dataSource: RxTableDataSource<SectionModel<String, Domain.Detail>> = {
+  private lazy var dataSource: RxTableDataSource<SectionModel<String, Element>> = {
       return createDataSource()
     }()
-  
-  private lazy var typeDataSource: RxCollectionDataSource = {
-    return createTypeDataSource()
-  }()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -37,29 +35,34 @@ class HomeController: UIViewController {
       .mapToVoid()
       .asDriverOnErrorJustComplete()
     
-    let query = content.searchBar.textField.rx
-      .text
-      .orEmpty
-      .debounce(.milliseconds(200), scheduler: MainScheduler.instance)
+    let itemSelectedTrigger = content.tableView.rx
+      .modelSelected(Element.self)
+      .do(onNext: { item in
+        print("Selected")
+      })
       .asDriverOnErrorJustComplete()
     
     let input = HomeViewModel.Input(
       viewDidLoad: viewDidLoadTrigger,
-      query: query
+      itemSelected: itemSelectedTrigger
     )
     
     let output = viewModel.transform(input: input)
     
-    output.viewDidLoad
-      .drive()
-      .disposed(by: disposeBag)
-    
-    output.items
+    output.calendar
       .drive(content.tableView.rx.items(dataSource: dataSource))
       .disposed(by: disposeBag)
     
-    output.types
-      .drive(content.collectionView.rx.items(dataSource: typeDataSource))
+    output.itemSelected
+      .drive()
+      .disposed(by: disposeBag)
+    
+    output.fetching
+      .drive(rx.fetching)
+      .disposed(by: disposeBag)
+    
+    output.error
+      .drive(rx.erorr)
       .disposed(by: disposeBag)
   }
   

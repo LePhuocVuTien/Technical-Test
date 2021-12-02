@@ -115,10 +115,14 @@ struct R: Rswift.Validatable {
   }
   #endif
 
-  /// This `R.color` struct is generated, and contains static references to 6 colors.
+  /// This `R.color` struct is generated, and contains static references to 11 colors.
   struct color {
     /// Color `AccentColor`.
     static let accentColor = Rswift.ColorResource(bundle: R.hostingBundle, name: "AccentColor")
+    /// Color `bgActive`.
+    static let bgActive = Rswift.ColorResource(bundle: R.hostingBundle, name: "bgActive")
+    /// Color `bgNormal`.
+    static let bgNormal = Rswift.ColorResource(bundle: R.hostingBundle, name: "bgNormal")
     /// Color `black`.
     static let black = Rswift.ColorResource(bundle: R.hostingBundle, name: "black")
     /// Color `line`.
@@ -127,6 +131,12 @@ struct R: Rswift.Validatable {
     static let placeholder = Rswift.ColorResource(bundle: R.hostingBundle, name: "placeholder")
     /// Color `red`.
     static let red = Rswift.ColorResource(bundle: R.hostingBundle, name: "red")
+    /// Color `textPri`.
+    static let textPri = Rswift.ColorResource(bundle: R.hostingBundle, name: "textPri")
+    /// Color `textSec`.
+    static let textSec = Rswift.ColorResource(bundle: R.hostingBundle, name: "textSec")
+    /// Color `textThi`.
+    static let textThi = Rswift.ColorResource(bundle: R.hostingBundle, name: "textThi")
     /// Color `white`.
     static let white = Rswift.ColorResource(bundle: R.hostingBundle, name: "white")
 
@@ -136,6 +146,24 @@ struct R: Rswift.Validatable {
     @available(iOS 11.0, *)
     static func accentColor(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIColor? {
       return UIKit.UIColor(resource: R.color.accentColor, compatibleWith: traitCollection)
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
+    /// `UIColor(named: "bgActive", bundle: ..., traitCollection: ...)`
+    @available(tvOS 11.0, *)
+    @available(iOS 11.0, *)
+    static func bgActive(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIColor? {
+      return UIKit.UIColor(resource: R.color.bgActive, compatibleWith: traitCollection)
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
+    /// `UIColor(named: "bgNormal", bundle: ..., traitCollection: ...)`
+    @available(tvOS 11.0, *)
+    @available(iOS 11.0, *)
+    static func bgNormal(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIColor? {
+      return UIKit.UIColor(resource: R.color.bgNormal, compatibleWith: traitCollection)
     }
     #endif
 
@@ -176,6 +204,33 @@ struct R: Rswift.Validatable {
     #endif
 
     #if os(iOS) || os(tvOS)
+    /// `UIColor(named: "textPri", bundle: ..., traitCollection: ...)`
+    @available(tvOS 11.0, *)
+    @available(iOS 11.0, *)
+    static func textPri(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIColor? {
+      return UIKit.UIColor(resource: R.color.textPri, compatibleWith: traitCollection)
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
+    /// `UIColor(named: "textSec", bundle: ..., traitCollection: ...)`
+    @available(tvOS 11.0, *)
+    @available(iOS 11.0, *)
+    static func textSec(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIColor? {
+      return UIKit.UIColor(resource: R.color.textSec, compatibleWith: traitCollection)
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
+    /// `UIColor(named: "textThi", bundle: ..., traitCollection: ...)`
+    @available(tvOS 11.0, *)
+    @available(iOS 11.0, *)
+    static func textThi(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIColor? {
+      return UIKit.UIColor(resource: R.color.textThi, compatibleWith: traitCollection)
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
     /// `UIColor(named: "white", bundle: ..., traitCollection: ...)`
     @available(tvOS 11.0, *)
     @available(iOS 11.0, *)
@@ -189,6 +244,22 @@ struct R: Rswift.Validatable {
     @available(watchOSApplicationExtension 4.0, *)
     static func accentColor(_: Void = ()) -> UIKit.UIColor? {
       return UIKit.UIColor(named: R.color.accentColor.name)
+    }
+    #endif
+
+    #if os(watchOS)
+    /// `UIColor(named: "bgActive", bundle: ..., traitCollection: ...)`
+    @available(watchOSApplicationExtension 4.0, *)
+    static func bgActive(_: Void = ()) -> UIKit.UIColor? {
+      return UIKit.UIColor(named: R.color.bgActive.name)
+    }
+    #endif
+
+    #if os(watchOS)
+    /// `UIColor(named: "bgNormal", bundle: ..., traitCollection: ...)`
+    @available(watchOSApplicationExtension 4.0, *)
+    static func bgNormal(_: Void = ()) -> UIKit.UIColor? {
+      return UIKit.UIColor(named: R.color.bgNormal.name)
     }
     #endif
 
@@ -221,6 +292,30 @@ struct R: Rswift.Validatable {
     @available(watchOSApplicationExtension 4.0, *)
     static func red(_: Void = ()) -> UIKit.UIColor? {
       return UIKit.UIColor(named: R.color.red.name)
+    }
+    #endif
+
+    #if os(watchOS)
+    /// `UIColor(named: "textPri", bundle: ..., traitCollection: ...)`
+    @available(watchOSApplicationExtension 4.0, *)
+    static func textPri(_: Void = ()) -> UIKit.UIColor? {
+      return UIKit.UIColor(named: R.color.textPri.name)
+    }
+    #endif
+
+    #if os(watchOS)
+    /// `UIColor(named: "textSec", bundle: ..., traitCollection: ...)`
+    @available(watchOSApplicationExtension 4.0, *)
+    static func textSec(_: Void = ()) -> UIKit.UIColor? {
+      return UIKit.UIColor(named: R.color.textSec.name)
+    }
+    #endif
+
+    #if os(watchOS)
+    /// `UIColor(named: "textThi", bundle: ..., traitCollection: ...)`
+    @available(watchOSApplicationExtension 4.0, *)
+    static func textThi(_: Void = ()) -> UIKit.UIColor? {
+      return UIKit.UIColor(named: R.color.textThi.name)
     }
     #endif
 
@@ -362,7 +457,7 @@ struct R: Rswift.Validatable {
     fileprivate init() {}
   }
 
-  /// This `R.image` struct is generated, and contains static references to 5 images.
+  /// This `R.image` struct is generated, and contains static references to 6 images.
   struct image {
     /// Image `arrowLeft`.
     static let arrowLeft = Rswift.ImageResource(bundle: R.hostingBundle, name: "arrowLeft")
@@ -372,6 +467,8 @@ struct R: Rswift.Validatable {
     static let flag = Rswift.ImageResource(bundle: R.hostingBundle, name: "flag")
     /// Image `home`.
     static let home = Rswift.ImageResource(bundle: R.hostingBundle, name: "home")
+    /// Image `ic-completed-training`.
+    static let icCompletedTraining = Rswift.ImageResource(bundle: R.hostingBundle, name: "ic-completed-training")
     /// Image `info`.
     static let info = Rswift.ImageResource(bundle: R.hostingBundle, name: "info")
 
@@ -400,6 +497,13 @@ struct R: Rswift.Validatable {
     /// `UIImage(named: "home", bundle: ..., traitCollection: ...)`
     static func home(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
       return UIKit.UIImage(resource: R.image.home, compatibleWith: traitCollection)
+    }
+    #endif
+
+    #if os(iOS) || os(tvOS)
+    /// `UIImage(named: "ic-completed-training", bundle: ..., traitCollection: ...)`
+    static func icCompletedTraining(compatibleWith traitCollection: UIKit.UITraitCollection? = nil) -> UIKit.UIImage? {
+      return UIKit.UIImage(resource: R.image.icCompletedTraining, compatibleWith: traitCollection)
     }
     #endif
 

@@ -6,8 +6,8 @@ import RxDataSources
 
 extension HomeController {
   
-  func createDataSource() -> RxTableDataSource<SectionModel<String, Domain.Detail>> {
-    return RxTableDataSource<SectionModel<String, Domain.Detail>>(
+  func createDataSource() -> RxTableDataSource<SectionModel<String, Element>> {
+    return RxTableDataSource<SectionModel<String, Element>>(
       configureCell: { (dataSource, tableView, indexPath, item) -> UITableViewCell in
         let cell = tableView.dequeueReusableCell(
           cellClass: Cell.self,
@@ -19,24 +19,32 @@ extension HomeController {
     )
   }
   
-  func createTypeDataSource() -> RxCollectionDataSource<SectionModel<String, TypeItem>> {
-    return RxCollectionDataSource<SectionModel<String, TypeItem>>(
-      configureCell: { (dataSource, collectionView, indexPath, item) -> UICollectionViewCell in
-        let cell = collectionView.dequeueReusableCell(
-          cellClass: TypeCell.self,
-          indexPath: indexPath
-        )
-        cell.configure(item)
-        return cell
-      }
-    )
+  func errorAlert(_ error: String) {
+    DispatchQueue.main.async(execute: {
+      let alertController = UIAlertController(
+        title: Works.inform,
+        message: error,
+        preferredStyle: .alert
+      )
+      alertController.addAction(UIAlertAction(title: Works.ok, style: .default))
+      self.present(alertController, animated: true, completion: nil)
+      
+    })
   }
 }
   
 extension Reactive where Base: HomeController {
-  var name: Binder<String> {
+  var fetching: Binder<Bool> {
     return Binder(self.base) { scene, item in
-      print(item)
+      _ = item
+        ? scene.content.activity.startAnimating()
+        : scene.content.activity.stopAnimating()
+    }
+  }
+  
+  var erorr: Binder<Error> {
+    return Binder(self.base) { scene, item in
+      scene.errorAlert(item.localizedDescription)
     }
   }
 }
